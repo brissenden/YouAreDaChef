@@ -9,8 +9,8 @@ Gem::Specification.new do |spec|
   spec.authors       = ["Robert Krzysztoforski"]
   spec.email         = ["robert.krzysztoforski@gmail.com"]
 
-  spec.summary       = %q{Support AOP methods to Ruby classes.}
-  spec.description   = %q{Support AOP methods to Ruby classes.}
+  spec.summary       = %q{Simple AOP library for Ruby inspired by https://github.com/raganwald/YouAreDaChef}
+  spec.description   = %q{Simple AOP library for Ruby inspired by https://github.com/raganwald/YouAreDaChef}
   spec.homepage      = 'https://github.com/brissenden/YouAreDaChef'
 
   spec.files         = `git ls-files -z`.split("\x0").reject { |f| f.match(%r{^(test|spec|features)/}) }

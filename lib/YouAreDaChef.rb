@@ -2,6 +2,8 @@ require 'YouAreDaChef/version'
 require 'securerandom'
 
 module YouAreDaChef
+  MultipleAroundCallbacks = Class.new(StandardError)
+
   def callbacks
     @callbacks ||= default_callbacks
   end
@@ -14,13 +16,17 @@ module YouAreDaChef
     define_callback(:after, method, callback)
   end
 
+  def around(method, callback)
+    define_callback(:around, method, callback)
+  end
+
   def remove_all_callbacks
     @callbacks = default_callbacks
   end
 
   private
   def default_callbacks
-    { before: {}, after: {} }
+    { before: {}, after: {}, around: {} }
   end
 
   def filter_callbacks(type, method)
@@ -39,7 +45,7 @@ module YouAreDaChef
     callback_klazz = self
     define_method method do |*args|
       callback_klazz.send(:execute_before_callbacks, method, self, *args)
-      result = send(alias_name, *args)
+      result = callback_klazz.send(:execute_around_callbacks, method, alias_name, self, *args)
       callback_klazz.send(:execute_after_callbacks, method, self, *args, result)
       result
     end
@@ -51,7 +57,18 @@ module YouAreDaChef
 
   def execute_before_callbacks(method, object, *args)
     filter_callbacks(:before, method).each do |callback|
-      callback.call(*args)
+      callback.call(*args, object)
+    end
+  end
+
+  def execute_around_callbacks(method, alias_name, object, *args)
+    around_callbacks = filter_callbacks(:around, method)
+    if around_callbacks.empty?
+      object.send(alias_name, *args)
+    elsif around_callbacks.size == 1
+      around_callbacks.first.call(object.method(alias_name), args, object)
+    else
+      raise MultipleAroundCallbacks.new 'Only one around callback is allowed per method'
     end
   end
 
