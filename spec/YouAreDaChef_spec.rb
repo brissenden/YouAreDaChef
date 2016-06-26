@@ -27,6 +27,26 @@ describe YouAreDaChef do
     end
   end
 
+  specify 'empty hooks' do
+    klazz = DummyMathClass.dup
+    instance = klazz.new(0)
+
+    klazz.send(:before, :plus, proc {})
+    klazz.send(:after, :plus, proc {})
+    klazz.send(:around, :plus, proc {})
+
+    expect(klazz.callbacks[:before][:plus].size).to eq 1
+    expect(klazz.callbacks[:after][:plus].size).to eq 1
+    expect(klazz.callbacks[:around][:plus].size).to eq 1
+
+    private_aliases = instance.private_methods.select{ |m| m =~ /__callbacks__/ }
+    expect(private_aliases.size).to eq 3
+
+    default_callbacks = { before: {}, after: {}, around: {} }
+    expect(klazz.remove_all_callbacks).to eq default_callbacks
+    expect(klazz.callbacks).to eq default_callbacks
+  end
+
   specify 'simple before / after hook' do
     klazz = DummyMathClass.dup
     instance = klazz.new(0)
@@ -95,30 +115,49 @@ describe YouAreDaChef do
     expect(instance.value).to eq 3
   end
 
-  specify 'clear all callbacks' do
+  specify 'multiple before callbacks' do
+    klazz = DummyMathClass.dup
+    instance = klazz.new(0)
+    proxy = double(call: nil)
+
+    klazz.send(:before, :plus, proxy)
+    klazz.send(:before, :plus, proxy)
+
+    instance.plus(0)
+    expect(proxy).to have_received(:call).twice
+  end
+
+  specify 'multiple after callbacks' do
+    klazz = DummyMathClass.dup
+    instance = klazz.new(0)
+    proxy = double(call: nil)
+
+    klazz.send(:after, :plus, proxy)
+    klazz.send(:after, :plus, proxy)
+
+    instance.plus(0)
+    expect(proxy).to have_received(:call).twice
+  end
+
+  specify 'raises a proper error when callback is not defined' do
     klazz = DummyMathClass.dup
     instance = klazz.new(0)
 
-    klazz.send(:before, :plus, proc {})
-    klazz.send(:after, :plus, proc {})
-    klazz.send(:around, :plus, proc {})
+    klazz.send(:before, :plus, nil)
+    klazz.send(:after, :substract, nil)
+    klazz.send(:around, :multiply, nil)
 
-    expect(klazz.callbacks[:before][:plus].size).to eq 1
-    expect(klazz.callbacks[:after][:plus].size).to eq 1
-    expect(klazz.callbacks[:around][:plus].size).to eq 1
+    expect { instance.plus(2) }.to raise_error YouAreDaChef::CallbackNotDefined, 'Callback should be a Proc function'
+    expect { instance.substract(2) }.to raise_error YouAreDaChef::CallbackNotDefined, 'Callback should be a Proc function'
+    expect { instance.multiply(2) }.to raise_error YouAreDaChef::CallbackNotDefined, 'Callback should be a Proc function'
   end
 
   specify 'raises a proper error when two around callbacks are present' do
     klazz = DummyMathClass.dup
     instance = klazz.new(0)
 
-    klazz.send(:around, :plus, proc { |method, args|
-      method.call(*args)
-    })
-
-    klazz.send(:around, :plus, proc { |method, args|
-      method.call(*args)
-    })
+    klazz.send(:around, :plus, proc {})
+    klazz.send(:around, :plus, proc {})
 
     expect {
       instance.plus(2)
