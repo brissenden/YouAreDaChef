@@ -62,7 +62,7 @@ module YouAreDaChef
   def execute_before_callbacks(method, object, *args)
     filter_callbacks(:before, method).each do |callback|
       verify_callback(callback)
-      callback.call(*args, object)
+      callback.call(args, object)
     end
   end
 
@@ -82,7 +82,7 @@ module YouAreDaChef
   def execute_after_callbacks(method, object, *args, result)
     filter_callbacks(:after, method).each do |callback|
       verify_callback(callback)
-      callback.call(*args, object, result)
+      callback.call(args, object, result)
     end
   end
 

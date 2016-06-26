@@ -10,6 +10,10 @@ describe YouAreDaChef do
       @value = value
     end
 
+    def reset
+      @value = 0
+    end
+
     def plus(x)
       @value =+ x
     end
@@ -51,14 +55,14 @@ describe YouAreDaChef do
     klazz = DummyMathClass.dup
     instance = klazz.new(0)
 
-    klazz.send(:before, :plus, proc { |x, object, other|
-      expect(x).to eq 1
+    klazz.send(:before, :plus, proc { |args, object, other|
+      expect(args).to eq [1]
       expect(object).to eq instance
       expect(other).to be_nil
     })
 
-    klazz.send(:after, :plus, proc { |x, object, result, other|
-      expect(x).to eq 1
+    klazz.send(:after, :plus, proc { |args, object, result, other|
+      expect(args).to eq [1]
       expect(object).to eq instance
       expect(result).to eq 1
       expect(other).to be_nil
@@ -66,6 +70,26 @@ describe YouAreDaChef do
 
     instance.plus(1)
     expect(instance.value).to eq 1
+  end
+
+  specify 'handle method without arguments' do
+    klazz = DummyMathClass.dup
+    instance = klazz.new(0)
+
+    klazz.send(:before, :reset, proc { |args, object, other|
+      expect(args).to eq []
+      expect(object).to eq instance
+      expect(other).to be_nil
+    })
+
+    klazz.send(:after, :reset, proc { |args, object, result, other|
+      expect(args).to eq []
+      expect(object).to eq instance
+      expect(result).to eq 0
+      expect(other).to be_nil
+    })
+
+    instance.reset
   end
 
   specify 'around hook' do
