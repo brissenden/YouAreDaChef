@@ -5,6 +5,7 @@
 # YouAreDaChef
 
 A Ruby implementation of an YouAreDaChef library inspired by https://github.com/raganwald/YouAreDaChef.
+This library supports `before`, `after` and `around` methods.
 
 ## Installation
 
@@ -24,7 +25,40 @@ Or install it yourself as:
 
 ## Usage
 
-TODO: Write usage instructions here
+```
+class Glue
+  extend YouAreDaChef
+
+  attr_reader :use_case
+
+  def initialize
+    @use_case = UseCase.new
+  end
+
+  def assigned
+  end
+
+  def assessed
+  end
+
+  around :assigned, proc { |method, args|
+    method.call(*args)
+    # some code
+  }
+
+  before :assessed, proc { |args, object|
+    object.use_case.clean_up_old_assessments
+    # some code
+  }
+
+  after :assessed, proc { |args, object, result|
+    object.use_case.send_email_notification
+    # some code
+  }
+end
+```
+
+After extening
 
 ## Contributing
 
