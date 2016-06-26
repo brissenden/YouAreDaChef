@@ -4,3 +4,5 @@ rvm:
 before_install: gem install bundler
 gemfile: Gemfile
 script: make mutate
+env:
+  - CODECLIMATE_REPO_TOKEN=e4affcf7998f373206eb471d2b2725984d87923018ccbd5186638673fc44aeed
