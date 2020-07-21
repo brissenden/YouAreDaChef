@@ -26,6 +26,7 @@ module YouAreDaChef
   end
 
   private
+
   def default_callbacks
     { before: {}, after: {}, around: {} }
   end
@@ -75,7 +76,7 @@ module YouAreDaChef
       verify_callback(callback)
       callback.call(object.method(alias_name), args, object)
     else
-      raise MultipleAroundCallbacks.new 'Only one around callback is allowed per method'
+      raise MultipleAroundCallbacks, 'Only one around callback is allowed per method'
     end
   end
 
@@ -87,6 +88,6 @@ module YouAreDaChef
   end
 
   def verify_callback(callback)
-    raise CallbackNotDefined.new 'Callback should be a Proc function' unless callback
+    raise CallbackNotDefined, 'Callback should be a Proc function' unless callback
   end
 end

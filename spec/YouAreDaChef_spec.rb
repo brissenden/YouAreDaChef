@@ -15,7 +15,7 @@ describe YouAreDaChef do
     end
 
     def plus(x)
-      @value =+ x
+      @value = + x
     end
 
     def substract(x)
@@ -23,11 +23,11 @@ describe YouAreDaChef do
     end
 
     def multiply(x)
-      @value = @value * x
+      @value *= x
     end
 
     def divide(x)
-      @value = @value / x
+      @value /= x
     end
   end
 
@@ -43,7 +43,7 @@ describe YouAreDaChef do
     expect(klazz.callbacks[:after][:plus].size).to eq 1
     expect(klazz.callbacks[:around][:plus].size).to eq 1
 
-    private_aliases = instance.private_methods.select{ |m| m =~ /__callbacks__/ }
+    private_aliases = instance.private_methods.select { |m| m =~ /__callbacks__/ }
     expect(private_aliases.size).to eq 3
 
     default_callbacks = { before: {}, after: {}, around: {} }
@@ -101,7 +101,7 @@ describe YouAreDaChef do
       expect(object).to eq instance
       expect(other).to be_nil
 
-      sum = args.inject(0){ |a, i| a += i }
+      sum = args.inject(0) { |a, i| a += i }
       method.call(sum)
     })
 
@@ -110,7 +110,7 @@ describe YouAreDaChef do
       expect(object).to eq instance
       expect(other).to be_nil
 
-      sum = args.inject(0){ |a, i| a += i }
+      sum = args.inject(0) { |a, i| a += i }
       method.call(sum)
     })
 
@@ -183,8 +183,8 @@ describe YouAreDaChef do
     klazz.send(:around, :plus, proc {})
     klazz.send(:around, :plus, proc {})
 
-    expect {
+    expect do
       instance.plus(2)
-    }.to raise_error YouAreDaChef::MultipleAroundCallbacks, 'Only one around callback is allowed per method'
+    end.to raise_error YouAreDaChef::MultipleAroundCallbacks, 'Only one around callback is allowed per method'
   end
 end
