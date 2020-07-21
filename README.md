@@ -1,6 +1,6 @@
 [![Build Status](https://travis-ci.org/brissenden/YouAreDaChef.svg?branch=master)](https://travis-ci.org/brissenden/YouAreDaChef)
-[![Code Climate](https://codeclimate.com/github/brissenden/YouAreDaChef/badges/gpa.svg)](https://codeclimate.com/github/brissenden/YouAreDaChef)
-[![Test Coverage](https://codeclimate.com/github/brissenden/YouAreDaChef/badges/coverage.svg)](https://codeclimate.com/github/brissenden/YouAreDaChef/coverage)
+[![Maintainability](https://api.codeclimate.com/v1/badges/7f9576e4d3ebcb7e13b6/maintainability)](https://codeclimate.com/github/brissenden/YouAreDaChef/maintainability)
+[![Test Coverage](https://api.codeclimate.com/v1/badges/7f9576e4d3ebcb7e13b6/test_coverage)](https://codeclimate.com/github/brissenden/YouAreDaChef/test_coverage)
 
 # YouAreDaChef
 
